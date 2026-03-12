@@ -1,35 +1,16 @@
-import { Router } from "express";
-import {
-  getAllUsers,
-  updateUserStatus,
-  getDashboardStats
-} from "../controllers/admin.controller";
+import express from "express";
 import { authenticate, authorize } from "../middleware/auth.middleware";
+import {
+  getAllRepairJobs,
+  updateRepairJobStatus,
+  getAdminStats,
+} from "../controllers/admin.controller";
 
-const router = Router();
+const router = express.Router();
 
-/**
- * ADMIN ONLY
- */
-router.get(
-  "/users",
-  authenticate,
-  authorize("ADMIN"),
-  getAllUsers
-);
-
-router.put(
-  "/users/:id/status",
-  authenticate,
-  authorize("ADMIN"),
-  updateUserStatus
-);
-
-router.get(
-  "/dashboard",
-  authenticate,
-  authorize("ADMIN"),
-  getDashboardStats
-);
+// Only ADMIN
+router.get("/repair-jobs", authenticate, authorize("ADMIN"), getAllRepairJobs);
+router.put("/repair-jobs/:id", authenticate, authorize("ADMIN"), updateRepairJobStatus);
+router.get("/stats", authenticate, authorize("ADMIN"), getAdminStats);
 
 export default router;

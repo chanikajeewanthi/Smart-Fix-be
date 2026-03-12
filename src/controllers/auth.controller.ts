@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
-import { sign } from "jsonwebtoken";
+// import jwt from "jsonwebtoken";
+import jwt, { SignOptions } from "jsonwebtoken";
 import User, { Role } from "../models/User";
 import { JWT_SECRET, JWT_EXPIRES_IN } from "../config/jwt";
 
@@ -25,14 +26,15 @@ export const register = async (req: Request, res: Response) => {
     role: Role.CUSTOMER
   });
 
-  const token = jwt.sign(
-    { id: user._id, role: user.role },
-    JWT_SECRET,
-    { expiresIn: JWT_EXPIRES_IN }
-  );
+ const payload = { id: user._id, role: user.role };
+ const options: SignOptions = {
+  expiresIn: process.env.JWT_EXPIRES_IN as jwt.SignOptions["expiresIn"] || "1d",
+};
 
+    const token = jwt.sign(payload, process.env.JWT_SECRET as string, options);
   res.status(201).json({ token, user });
 };
+
 
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -43,11 +45,14 @@ export const login = async (req: Request, res: Response) => {
   const match = await bcrypt.compare(password, user.password);
   if (!match) return res.status(401).json({ message: "Invalid credentials" });
 
-  const token = jwt.sign(
-    { id: user._id, role: user.role },
-    JWT_SECRET,
-    { expiresIn: JWT_EXPIRES_IN }
-  );
+ const payload = { id: user._id, role: user.role };
+     const options: SignOptions = {
+        expiresIn: process.env.JWT_EXPIRES_IN as jwt.SignOptions["expiresIn"] || "1d",
+  };
+
+
+    const token = jwt.sign(payload, process.env.JWT_SECRET as string, options);
 
   res.json({ token, user });
 };
+

@@ -10,9 +10,7 @@ export interface AuthRequest extends Request {
   user?: JwtPayload;
 }
 
-/**
- * Verify JWT token
- */
+
 export const authenticate = (
   req: AuthRequest,
   res: Response,
@@ -39,9 +37,7 @@ export const authenticate = (
   }
 };
 
-/**
- * Role-based authorization
- */
+
 export const authorize =
   (...allowedRoles: Array<"CUSTOMER" | "STAFF" | "ADMIN">) =>
   (req: AuthRequest, res: Response, next: NextFunction) => {

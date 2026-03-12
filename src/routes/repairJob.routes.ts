@@ -1,6 +1,7 @@
 import { Router } from "express";
-import { generateAIDiagnosis } from "../controllers/repairJob.controller";
-import { generateInvoice } from "../controllers/repairJob.controller";
+// import { generateAIDiagnosis } from "../controllers/repairJob.controller";
+// import { generateInvoice } from "../controllers/repairJob.controller";
+import upload from "../middleware/upload";
 import {
   createRepairJob,
   getMyRepairJobs,
@@ -13,13 +14,12 @@ import { authenticate, authorize } from "../middleware/auth.middleware";
 
 const router = Router();
 
-/**
- * CUSTOMER
- */
+
 router.post(
   "/",
   authenticate,
   authorize("CUSTOMER"),
+  upload.single("image"),
   createRepairJob
 );
 
@@ -30,9 +30,7 @@ router.get(
   getMyRepairJobs
 );
 
-/**
- * ADMIN
- */
+
 router.get(
   "/",
   authenticate,
@@ -54,9 +52,7 @@ router.put(
   assignStaff
 );
 
-/**
- * STAFF
- */
+
 router.put(
   "/:id/update",
   authenticate,
@@ -64,19 +60,19 @@ router.put(
   updateRepairJob
 );
 
-router.post(
-  "/:id/ai-diagnosis",
-  authenticate,
-  authorize("ADMIN"),
-  generateAIDiagnosis
-);
+// router.post(
+//   "/:id/ai-diagnosis",
+//   authenticate,
+//   authorize("ADMIN"),
+//   generateAIDiagnosis
+// );
 
-router.get(
-  "/:id/invoice",
-  authenticate,
-  authorize("ADMIN"),
-  generateInvoice
-);
+// router.get(
+//   "/:id/invoice",
+//   authenticate,
+//   authorize("ADMIN"),
+//   generateInvoice
+// );
 
 
 export default router;
